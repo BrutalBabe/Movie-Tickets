@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--Vue An Axios Movie-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <section class="jumbotron text-center">
+    <div class="jumbotron container">
+      <h1 class="jumbotron-heading">Scene Selection</h1> 
+      <!--Tag to insert call to update html-->  
+      <h3 iclass="lead text-muted">Save your seat now!</h3>
+    </div>
+  </section>
+
+<section class="h-100 h-custom">
+        <div id="app" class="container h-100 py-5">
+          <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
+              <div class="table-responsive">
+                <table class="table">
+                  <!--Set the tables header columns-->
+                  <thead>
+                    <tr>
+                      <th scope="col" class="h5">Shopping Bag</th>
+                      <th scope="col">Format</th>
+                      <th scope="col">Quantity</th>
+                      <th scope="col">Price</th>
+                      <th scope="col">Format</th>
+                      <th scope="col">Quantity</th>
+                      <th scope="col">Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+    
+                <tr v-for="movie in aryMovies">
+                      <th scope="row" class="border-bottom-0">
+                      <!--Movie Information Table Data, calls to the API made here
+                          and bound to the compnenet as props to create the movie "card"-->
+                        <movie is="movie-item"
+                        v-bind:key="movie.id"
+                        v-bind:title="movie.original_title"
+                        v-bind:overview="movie.overview"
+                        v-bind:source="movie.poster_path"></movie>
+    
+                      <!--Child Ticket Table Data for quantity select-->
+                      <td class="align-middle border-bottom-0">
+                        <p class="mb-0" style="font-weight: 500;"> Child Ticket</p>
+                      </td>
+                      <td class="align-middle border-bottom-0">
+                        <div class="d-flex flex-row">
+                          <!--on click change the value in the input field, and simultanesly add to child ticket counter-->
+                          <button class="btn btn-link px-2"
+                              onclick="this.parentNode.querySelector('input[type=number]').stepDown()" 
+                              v-on:click="decrementChild(); addTotal()">
+                            <i class="fas fa-minus">-</i>
+                          </button>
+                          <!--Display number of tickets entered in field-->
+                          <input id="child" min="0" name="quantity" value="0" type="number"
+                            class="form-control form-control-sm" style="width: 50px;" />
+                          <!--on click change the value in the input field, and simultanesly add to child ticket counter-->
+                          <button class="btn btn-link px-2"
+                               onclick="this.parentNode.querySelector('input[type=number]').stepUp()"
+                               v-on:click="incrementChild(); addTotal()">
+                            <i class="fas fa-plus">+</i>
+                          </button>
+                        </div>
+                      </td>
+                      <td class="align-middle border-bottom-0">
+                        <p class="mb-0" style="font-weight: 500;">$9.50</p>
+                      </td><!--Child Ticket Ends-->
+    
+
+
+
+                      <!--Adult Ticket Table Data-->
+                      <td class="align-middle border-bottom-0">
+                        <p class="mb-0" style="font-weight: 500;">Adult Ticket</p>
+                      </td>
+                      <td class="align-middle border-bottom-0">
+                        <div class="d-flex flex-row">
+                          <!--on click change the value in the input field, and simultanesly decrease the adult ticket counter-->
+                          <button class="btn btn-link px-2"
+                            onclick="this.parentNode.querySelector('input[type=number]').stepDown()"
+                            v-on:click="decrementAdult(); addTotal()">
+                            <i class="fas fa-minus">-</i>
+                          </button>
+                          <!--Display number of tickets entered in field-->
+                          <input id="adult" min="0" name="quantity" value="0" type="number"
+                            class="form-control form-control-sm" style="width: 50px;" />
+                          <!--on click change the value in the input field, and simultanesly add to adult ticket counter-->
+                          <button class="btn btn-link px-2"
+                            onclick="this.parentNode.querySelector('input[type=number]').stepUp()"
+                            v-on:click="incrementAdult(); addTotal()">
+                            <i class="fas fa-plus">+</i>
+                          </button>
+                        </div>
+                      </td>
+                      <td class="align-middle border-bottom-0">
+                        <p class="mb-0" style="font-weight: 500;">$13.50</p>
+                      </td><!--Adult Ticket Ends-->
+                  </tr><!--End of Table Row Data-->
+
+                  </tbody>
+                </table>
+              </div>
+
+              <!--Container to hold check out information-->
+              <div class="card shadow-2-strong mb-5 mb-lg-0" style="border-radius: 16px;">
+                <div class="card-body p-4">
+                  <div class="row">
+                    <!--Card Type Form-->
+                    <div class="col-md-6 col-lg-4 col-xl-3 mb-4 mb-md-0">
+                      <form>
+                        <div class="d-flex flex-row pb-3">
+                          <div class="d-flex align-items-center pe-2">
+                            <input class="form-check-input" type="radio" name="radioNoLabel" id="radioNoLabel1v"
+                              value="" aria-label="..." checked />
+                          </div>
+                          <div class="rounded border w-100 p-3">
+                            <p class="d-flex align-items-center mb-0">
+                              <i class="fab fa-cc-mastercard fa-2x text-dark pe-2"></i>Credit
+                              Card
+                            </p>
+                          </div>
+                        </div>
+                        <div class="d-flex flex-row pb-3">
+                          <div class="d-flex align-items-center pe-2">
+                            <input class="form-check-input" type="radio" name="radioNoLabel" id="radioNoLabel2v"
+                              value="" aria-label="..." />
+                          </div>
+                          <div class="rounded border w-100 p-3">
+                            <p class="d-flex align-items-center mb-0">
+                              <i class="fab fa-cc-visa fa-2x fa-lg text-dark pe-2"></i>Debit Card
+                            </p>
+                          </div>
+                        </div>
+                        <div class="d-flex flex-row">
+                          <div class="d-flex align-items-center pe-2">
+                            <input class="form-check-input" type="radio" name="radioNoLabel" id="radioNoLabel3v"
+                              value="" aria-label="..." />
+                          </div>
+                          <div class="rounded border w-100 p-3">
+                            <p class="d-flex align-items-center mb-0">
+                              <i class="fab fa-cc-paypal fa-2x fa-lg text-dark pe-2"></i>PayPal
+                            </p>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                    <!--Card Information Form-->
+                    <div class="col-md-6 col-lg-4 col-xl-6">
+                      <div class="row">
+                        <div class="col-12 col-xl-6">
+                          <div class="form-outline mb-4 mb-xl-5">
+                            <input type="text" id="typeName" class="form-control form-control-lg" siez="17"
+                              placeholder="John Smith" />
+                            <label class="form-label" for="typeName">Name on card</label>
+                          </div>
+      
+                          <div class="form-outline mb-4 mb-xl-5">
+                            <input type="text" id="typeExp" class="form-control form-control-lg" placeholder="MM/YY"
+                              size="7" id="exp" minlength="7" maxlength="7" />
+                            <label class="form-label" for="typeExp">Expiration</label>
+                          </div>
+                        </div>
+                        <div class="col-12 col-xl-6">
+                          <div class="form-outline mb-4 mb-xl-5">
+                            <input type="text" id="typeText" class="form-control form-control-lg" siez="17"
+                              placeholder="1111 2222 3333 4444" minlength="19" maxlength="19" />
+                            <label class="form-label" for="typeText">Card Number</label>
+                          </div>
+      
+                          <div class="form-outline mb-4 mb-xl-5">
+                            <input type="password" id="typeText" class="form-control form-control-lg"
+                              placeholder="&#9679;&#9679;&#9679;" size="1" minlength="3" maxlength="3" />
+                            <label class="form-label" for="typeText">Cvv</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Checkout Calculate total price of combined tickets-->
+                    <div class="col-lg-4 col-xl-3">
+                      <div class="d-flex justify-content-between" style="font-weight: 500;">
+                        <p class="mb-2">Adult Ticket: $13.50</p>
+                        <!--Display number of tickets and subtotal-->
+                        <p id="displayAdult">{{adultCount}} Admission ${{adultSubtotal}}</p>
+                      </div>
+    
+                      <div class="d-flex justify-content-between" style="font-weight: 500;">
+                        <p class="mb-0">Child Ticket: $9.50</p>
+                        <!--Display number of tickets and subtotal-->
+                        <p id="displayChild">{{childCount}} Admission ${{childSubtotal}}</p>
+                      </div>
+      
+                      <hr class="my-4">
+      
+                      <div class="d-flex justify-content-between mb-4" style="font-weight: 500;">
+                        <p class="mb-2">Total (tax included)</p>
+                        <!--Display combined subtotals as the total and display on the button-->
+                        <p class="mb-2">${{total}}</p>
+                      </div>
+      
+                      <button type="button" class="btn btn-primary btn-block btn-lg">
+                        <div class="d-flex justify-content-between">
+                          <span>Checkout</span>
+                          <span>${{total}}</span>
+                        </div>
+                      </button>
+                    </div><!--Checkout Container-->
+                  </div><!--Class Row-->
+                </div><!--Card Body-->
+              </div>
+            </div><!--Class Column-->
+          </div>
+        </div><!--Class Container-->
+      </section>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <!-- Core theme JS-->
+    <script type="javascript" src="script.js"></script>
+
+
+    
+    <script>
+    //create movie-item component to iterate in html
+    Vue.component('movie-item', {
+         template:   '\
+        <div class="d-flex align-items-center">\
+            <img :src="`https://www.themoviedb.org/t/p/w440_and_h660_face` + source" style="width: 120px;">\
+                      <div class="flex-column ms-4">\
+                            <p class="mb-2 title">{{title}}</p>\
+                            <a href="javascript://" title="Movie Overview" data-toggle="popover" data-placement="right" \
+                            :data-content="overview">Click for Info</a>\
+                        </div>\
+            </div>\
+          ',
+    //requirements for movie-item component
+    props: ['title', 'overview','source']
+})
+        //create vue instance and name variable to be used above
+        var app = new Vue({
+                el: '#app',
+                data () {
+                    return {
+                            aryMovies:[],
+                            adultCount: 0,
+                            childCount: 0,
+                            childSubtotal: 0,
+                            adultSubtotal: 0,
+                            total: 0
+                        }
+          },
+            //get api request return array of top 20 movies in theatres with arrays of their information
+            mounted(){
+                axios.get('https://api.themoviedb.org/3/movie/now_playing?api_key=c4e63ad17769d8bb1a2163ce73a3d827&language=en-US&page=1')
+                .then( (response) => {
+           
+                    this.aryMovies = response.data.results;
+                })
+            }, 
+            methods: {
+              incrementChild(){
+                //increase ticket count and set element to visible if there is an active count
+                this.childCount++;
+                document.getElementById('displayChild').style.visibility = "visible";
+                },
+              incrementAdult(){
+                //increase ticket count and set element to visible if there is an active count
+                  this.adultCount++;
+                  document.getElementById('displayAdult').style.visibility = "visible";
+                },
+              decrementChild(){
+                //decrease ticket count
+                this.childCount--;
+                //if the count is already at zero or less then make the element invisible 
+                //and be sure the count stays at zero for accuracy
+                if(this.childCount <= 0){
+                  this.childCount = 0;
+                  document.getElementById('displayChild').style.visibility = "hidden";
+                  this.childCount = 0;
+                }
+              }, 
+              decrementAdult(){
+                //decrease ticket count
+                this.adultCount--;
+                //if the count is already at zero or less then make the element invisible 
+                //and be sure the count stays at zero for accuracy
+                if(this.adultCount <= 0){
+                  document.getElementById('displayAdult').style.visibility = "hidden";
+                  this.adultCount = 0;
+                }
+              },
+              addTotal(){
+                //Set Price for tickets
+                var childPrice = 9.50;
+                var adultPrice = 13.50;
+                //multitply quantity of tickets for subtotal
+                this.childSubtotal = (this.childCount * childPrice);
+                this.adultSubtotal = (this.adultCount * adultPrice);
+                //add subtotals together for total
+                this.total = (this.childCount * childPrice) + (this.adultCount * adultPrice);
+              }
+            }//methods
+        })//Vue Instance
+
+        //Activates popover functions for overview to display
+        $(document).ready(function(){
+               $('[data-toggle="popover"]').popover();   
+            });
+
+    </script>
+</body>
+</html>
